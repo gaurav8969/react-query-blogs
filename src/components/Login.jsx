@@ -1,15 +1,18 @@
 import loginService from '../services/login';
 import blogService from '../services/blogs';
+import commentService from '../services/comment';
 import { useState } from 'react';
 import Notification from './Notification';
 import { useUserDispatch } from '../contexts/UserContext';
 import { useNotificationDispatch } from '../contexts/NotificationContext';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
   const userDispatch = useUserDispatch();
   const notificationDispatch = useNotificationDispatch();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -30,6 +33,8 @@ const LoginForm = () => {
       setUsername('');
       setPassword('');
       blogService.setToken(user.token);
+      commentService.setToken(user.token);
+      navigate('/');
     }catch(exception){
       notificationDispatch({
         type: 'ERROR',

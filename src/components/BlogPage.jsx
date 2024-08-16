@@ -1,33 +1,20 @@
+import { useQueryClient } from '@tanstack/react-query';
 import { useRef } from 'react';
-import blogService from '../services/blogs';
-import Blog from './Blog';
-import CreateForm from './CreateForm';
-import Notification from './Notification';
+import { Link } from 'react-router-dom';
+import { useUserValue } from '../contexts/UserContext';
+import CreateBlogForm from './CreateBlogForm';
 import Togglable from './Togglable';
-import { useQuery } from '@tanstack/react-query';
-import { useUserDispatch, useUserValue } from '../contexts/UserContext';
+import Notification from './Notification';
 
 const BlogPage = () => {
   const user = useUserValue();
-  const createFormRef = useRef();
-  const dispatch = useUserDispatch();
+  const createBlogFormRef = useRef();
 
-  const result = useQuery({
-    queryKey: ['blogs'],
-    queryFn: blogService.getAll,
-    retry: 1
-  });
-
-  //console.log(JSON.parse(JSON.stringify(result)));
-  if ( result.isLoading ) {
-    return <div>loading data...</div>;
-  }
-
-  if(result.isError) {
-    return <div>blog service not available due to problems in server</div>;
-  }
-
-  const blogs = result.data;
+  const queryClient = useQueryClient();
+  const blogs = queryClient.getQueryData(['blogs']);
+  if(!blogs) return (
+    <p>blog service not available due to problems in server</p>
+  );
 
   const compareByLikes = (blog1, blog2) => {
     return blog2.likes - blog1.likes;
@@ -39,41 +26,27 @@ const BlogPage = () => {
     blogs.sort(compareByLikes);
   }
 
-  const loggedIn = () => {
-    return `${user.name} logged in`;
-  };
-
-  const logout = () => {
-    dispatch({
-      type: 'setUser',
-      payload: null
-    });
-    window.localStorage.removeItem('loggedBlogappUser');
-  };
-
   return (
     <>
-      <h2>blogs</h2>
       <Notification />
-      {loggedIn()}
-      <button onClick={logout}>
-        logout
-      </button>
-      <br />
-      <br />
+      <h2>blogs</h2>
       {
         blogs.map(blog => {
-          //blog.user.id for blogs populated from get request
-          //blog.user for newly added blogs before page reload
-          if(blog.user.id === user.id || blog.user === user.id){
-            return (<Blog key={blog.id} blog={blog} />);
+          if(blog.user.id === user.id){
+            return (
+              <div key={blog.id}>
+                <Link  to={`/blogs/${blog.id}`}>
+                  {blog.title}
+                </Link>
+              </div>
+            );
           }
           return;
         })
       }
 
-      <Togglable showLabel="add blog" hideLabel="hide" ref={createFormRef}>
-        <CreateForm formRef={createFormRef}/>
+      <Togglable showLabel="add blog" hideLabel="hide" ref={createBlogFormRef}>
+        <CreateBlogForm formRef={createBlogFormRef}/>
       </Togglable>
 
     </>

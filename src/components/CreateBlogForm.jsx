@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNotificationDispatch } from '../contexts/NotificationContext';
 import blogService from '../services/blogs';
 
-const CreateForm = ({ formRef }) => {
+const CreateBlogForm = ({ formRef }) => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
@@ -69,4 +69,4 @@ const CreateForm = ({ formRef }) => {
   );
 };
 
-export default CreateForm;
+export default CreateBlogForm;
