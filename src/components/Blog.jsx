@@ -71,9 +71,10 @@ const Blog = () => {
   const incrementLikes = async () => {
     const changedBlog = {
       ...blog,
-      likes:blog.likes + 1
+      likes: blog.likes + 1,
+      user: blog.user.id,
+      comments: blog.comments.map((comment) => comment.id)
     };
-    changedBlog.user = changedBlog.user.id;
     updateBlogMutation.mutate(changedBlog);
     dispatch({
       type: 'NOTIFY',
