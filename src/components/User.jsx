@@ -1,40 +1,40 @@
 import { useEffect, useState } from 'react';
 import userService from '../services/users';
 import { Link, useParams } from 'react-router-dom';
+import { Container, Row, Col, Card } from 'react-bootstrap';
 
 const User = () => {
   const { id } = useParams();
-
   const [user, setUser] = useState(null);
+
   useEffect(() => {
-    userService.get(id).then(user => {
+    userService.get(id).then((user) => {
       setUser(user);
     });
   }, []);
 
-  if(!user)return (
-    <p>loading data....</p>
-  );
+  if (!user) return <p>Loading data...</p>;
 
   return (
-    <>
-      <h1>{user.name}</h1>
-      <br/>
-      <p style={{ fontWeight: 'bold', fontSize: 20 } }>add blogs</p>
-      <ul>
-        {
-          user.blogs.map(blog => {
-            return (
-              <div key={blog.id}>
-                <Link  to={`/blogs/${blog.id}`}>
-                  {blog.title}
+    <Container>
+      <Row className="justify-content-center">
+        <Col xs={12} md={8}>
+          <h1 className="text-center mb-4">{user.name}</h1>
+          <p style={{ fontWeight: 'bold', fontSize: 20, marginBottom: '1rem' }}>
+            Blogs created by {user.name}
+          </p>
+          {user.blogs.map((blog) => (
+            <Card key={blog.id} className="mb-3">
+              <Card.Body>
+                <Link to={`/blogs/${blog.id}`} className="text-decoration-none">
+                  <Card.Title>{blog.title}</Card.Title>
                 </Link>
-              </div>
-            );
-          })
-        }
-      </ul>
-    </>
+              </Card.Body>
+            </Card>
+          ))}
+        </Col>
+      </Row>
+    </Container>
   );
 };
 
