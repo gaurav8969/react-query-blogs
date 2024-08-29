@@ -1,19 +1,17 @@
-:root{
-    width:100vw;
-}
-
 body{
     padding:0;
-    min-width:100%;
 }
 
 .container {
     margin:0;
     padding:0;
-    min-width:100%;
+}
+
+#root{
+    padding: 0;
+    margin: 0;
 }
 
 .MenuClass{
     padding:3px;
-    min-width:100%;
 }
